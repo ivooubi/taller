@@ -8,5 +8,5 @@
 // (los mensajes se guardan solo en el navegador de quien los escribe).
 window.SUPABASE_CONFIG = {
   url: "https://nxykmhdtwismygyaljyz.supabase.co",
-  anonKey: "tu-clave-anon-o-publishable"
+  anonKey: "sb_publishable_9xNx5TU7-eMw7ZVB2XV-YA_H8sVggBR"
 };

@@ -1,60 +1,1148 @@
-<!doctype html><html lang="es"><head>  <meta charset="utf-8">  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">  <title>Taller Ruedas</title>  <meta name="description" content="Taller de coches. Cuéntanos qué le pasa al tuyo y nos encargamos.">  <meta name="theme-color" content="#1a1c1f">
-  <link rel="preconnect" href="https://fonts.googleapis.com">  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>  <link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@500;600;800&display=swap" rel="stylesheet">
-  <style>    /* ---------- Variables ---------- */    :root {      --asphalt: #1a1c1f;   /* fondo base y velo sobre la foto */      --band:    #202327;   /* franja de fondo alterna */      --panel:   #272a2f;   /* tarjetas y chat */      --paint:   #ffffff;   /* blanco de pintura vial: texto y contorno */      --muted:   #b4b9bf;      --line:    rgb(255 255 255 / .14);      --signal:  #f5c400;   /* amarillo de chaleco reflectante: único acento */      --ink:     #16181b;   /* texto sobre el amarillo */      --open:    #5ccf7a;   /* punto de "abierto" */      --header-h: 4.5rem;      --pad:     clamp(1.25rem, 5vw, 4rem);      --font:    "Saira Semi Condensed", "Arial Narrow", system-ui, sans-serif;
-      /* Foto: cambia aquí qué parte de la imagen queda visible */      --hero-pos: 70% center;    }
-    /* ---------- Base ---------- */    *, *::before, *::after { box-sizing: border-box; }    [hidden] { display: none !important; }    html {      scroll-behavior: smooth;      scroll-padding-top: var(--header-h);      -webkit-text-size-adjust: 100%;    }    body {      margin: 0;      background: var(--asphalt);      color: var(--paint);      font-family: var(--font);      font-weight: 500;      line-height: 1.5;    }    a { color: inherit; }    :focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }    .sr-only {      position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;    }
-    /* ---------- Cabecera fija ---------- */    .site-header {      position: fixed;      inset: 0 0 auto 0;      z-index: 20;      display: flex;      align-items: center;      gap: 2rem;      height: calc(var(--header-h) + env(safe-area-inset-top));      padding: env(safe-area-inset-top) var(--pad) 0;      transition: background-color .25s, box-shadow .25s;    }    .site-header.is-solid {      background: rgb(26 28 31 / .95);      box-shadow: 0 1px 0 var(--line);    }    .brand {      margin-right: auto;      font-size: 1.4rem;      font-weight: 800;      text-transform: uppercase;      text-decoration: none;    }    .nav { display: flex; align-items: center; gap: 2rem; }    .nav__link {      padding: .4rem 0;      border-bottom: 2px solid transparent;      font-weight: 600;      letter-spacing: .04em;      text-transform: uppercase;      text-decoration: none;      transition: border-color .2s;    }    .nav__link:hover,    .nav__link[aria-current="true"] { border-color: var(--signal); }
-    .menu-toggle {      display: none;      position: relative;      width: 2.75rem;      height: 2.75rem;      margin-right: -.5rem;      padding: 0;      border: 0;      background: none;      color: inherit;      cursor: pointer;    }    .menu-toggle__bars,    .menu-toggle__bars::before,    .menu-toggle__bars::after {      position: absolute;      width: 1.5rem;      height: 2px;      background: currentColor;      transition: transform .2s, background-color .2s;    }    .menu-toggle__bars { top: 50%; left: 50%; margin: -1px 0 0 -.75rem; }    .menu-toggle__bars::before,    .menu-toggle__bars::after { content: ""; left: 0; }    .menu-toggle__bars::before { top: -7px; }    .menu-toggle__bars::after  { top: 7px; }    .menu-toggle[aria-expanded="true"] .menu-toggle__bars { background: transparent; }    .menu-toggle[aria-expanded="true"] .menu-toggle__bars::before { transform: translateY(7px) rotate(45deg); }    .menu-toggle[aria-expanded="true"] .menu-toggle__bars::after  { transform: translateY(-7px) rotate(-45deg); }
-    /* ---------- Botones y enlaces ---------- */    .btn {      display: inline-flex;      align-items: center;      justify-content: center;      min-height: 3rem;      padding: .7rem 1.5rem;      border: 2px solid transparent;      border-radius: .25rem;      font: 600 1.0625rem/1 var(--font);      letter-spacing: .03em;      text-transform: uppercase;      text-decoration: none;      cursor: pointer;      transition: background-color .15s, color .15s, border-color .15s, transform .15s;    }    .btn:active { transform: translateY(1px); }    .btn:disabled { opacity: .55; cursor: not-allowed; }    .btn--signal { background: var(--signal); color: var(--ink); }    .btn--signal:hover:not(:disabled) { background: #ffd324; }    .btn--ghost { border-color: var(--paint); background: transparent; color: var(--paint); }    .btn--ghost:hover { background: var(--paint); color: var(--ink); }    .btn--small { min-height: 2.5rem; padding: .5rem 1.1rem; font-size: 1rem; }
-    .nav__cta { display: none; }
-    .link {      font-weight: 600;      font-size: 1.0625rem;      letter-spacing: .03em;      text-transform: uppercase;      text-decoration: underline;      text-decoration-color: var(--signal);      text-decoration-thickness: 2px;      text-underline-offset: .35em;    }
-    .actions {      display: flex;      flex-wrap: wrap;      align-items: center;      gap: 1rem 1.75rem;      margin-top: clamp(1.75rem, 3.5vw, 2.75rem);    }
-    /* ---------- Hero ---------- */    .hero {      position: relative;      isolation: isolate;      display: flex;      align-items: center;      min-height: 100vh;      min-height: 100svh;      padding: calc(var(--header-h) + 2rem) var(--pad) 5rem;      /* Si img/hero.jpg no existe, se ve el degradado gris de la segunda capa */      background:url("hero.jpeg") var(--hero-pos) / cover no-repeat,        radial-gradient(120% 90% at 80% 40%, #3b4047 0%, var(--asphalt) 62%);    }    /* Velo oscuro a la izquierda para que el contorno blanco se lea sobre la foto */    .hero::before {      content: "";      position: absolute;      inset: 0;      z-index: -1;      background:        linear-gradient(90deg, rgb(26 28 31 / .9) 0%, rgb(26 28 31 / .65) 42%, rgb(26 28 31 / .1) 78%),        linear-gradient(0deg, rgb(26 28 31 / .6), transparent 28%);    }    .hero__copy { max-width: 56rem; }
-    /* Texto solo contorno */    .outline {      margin: 0;      color: transparent;      text-transform: uppercase;      -webkit-text-stroke: var(--stroke, 2px) var(--paint);    }    @supports not (-webkit-text-stroke: 1px #fff) {      .outline { color: var(--paint); }    }
-    .headline {      --stroke: clamp(1.25px, .25vw + .75px, 2.25px);      font-size: clamp(2.5rem, 8.5vw + .5rem, 6.25rem);      font-weight: 800;      line-height: .98;      letter-spacing: .01em;    }    /* Cada línea es una máscara para la entrada; el padding evita recortar el trazo */    .line {      display: block;      overflow: hidden;      padding: .08em .06em .14em;      margin: -.08em -.06em -.14em;    }    .line > span { display: block; }
-    .tagline {      --stroke: 1.1px;      max-width: 20em;      margin-top: clamp(1.25rem, 2.5vw, 2rem);      font-size: clamp(1.25rem, 2.2vw + .5rem, 2.25rem);      font-weight: 800;      line-height: 1.15;      letter-spacing: .02em;      text-wrap: balance;    }
-    /* Línea discontinua de carretera */    .road {      position: absolute;      left: var(--pad);      right: 0;      bottom: clamp(1.25rem, 3vh, 2rem);      height: 4px;      background: repeating-linear-gradient(90deg, var(--signal) 0 2.5rem, transparent 2.5rem 4.5rem);      -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 55%, transparent 100%);              mask-image: linear-gradient(90deg, #000 0%, #000 55%, transparent 100%);    }
-    /* ---------- Secciones ---------- */    .section { padding: clamp(4rem, 9vw, 7rem) var(--pad); }    .section--alt { background: var(--band); }    .section__inner { max-width: 72rem; margin-inline: auto; }    .section__head {      display: flex;      flex-wrap: wrap;      align-items: flex-end;      justify-content: space-between;      gap: 1rem 2rem;    }    .section__title {      margin: 0;      font-size: clamp(2rem, 4.5vw + .5rem, 3.75rem);      font-weight: 800;      line-height: 1;      letter-spacing: .01em;      text-transform: uppercase;    }    .lead { max-width: 32rem; margin: 1rem 0 0; font-size: 1.1875rem; color: var(--muted); }    .lead a { color: var(--paint); text-decoration-color: var(--signal); text-underline-offset: .25em; white-space: nowrap; }    .note { max-width: 40rem; margin: 1rem 0 0; color: var(--muted); }
-    .split {      display: grid;      grid-template-columns: minmax(0, 1fr);      gap: clamp(2rem, 5vw, 4rem);      align-items: start;    }    @media (min-width: 900px) {      .split { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }    }
-    /* Estado abierto / cerrado */    .status { display: flex; align-items: center; gap: .6rem; margin: 1rem 0 0; color: var(--muted); }    .status__dot { flex: none; width: .65rem; height: .65rem; border-radius: 50%; background: #8a9097; }    .status[data-abierto="true"] .status__dot { background: var(--open); }    .status[data-abierto="true"] { color: var(--paint); }
-    /* Ubicación */    .address { margin: 1.5rem 0 0; font-size: 1.25rem; font-style: normal; line-height: 1.35; }    .hours { display: grid; margin: 1.25rem 0 0; }    .hours__row {      display: flex;      justify-content: space-between;      gap: 1rem;      padding: .65rem 0;      border-bottom: 1px solid var(--line);    }    .hours__row dt { font-weight: 600; }    .hours__row dd { margin: 0; color: var(--muted); text-align: right; }    .map {      height: clamp(18rem, 45vw, 30rem);      overflow: hidden;      border: 1px solid var(--line);      border-radius: .25rem;      background: #2a2e33;    }    .map iframe {      display: block;      width: 100%;      height: 100%;      border: 0;      filter: grayscale(1) invert(.9) contrast(.9);    }
-    /* ---------- Carrusel de reseñas ---------- */    .carousel {      overflow: hidden;      margin-top: 2.5rem;      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);              mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);    }    .carousel__track {      display: flex;      gap: 1rem;      width: max-content;      margin: 0;      padding: 0 1rem 0 0;      list-style: none;    }    .carousel:hover .carousel__track,    .carousel.is-paused .carousel__track { animation-play-state: paused; }
-    .review {      display: flex;      flex: 0 0 20rem;      flex-direction: column;      gap: .9rem;      padding: 1.25rem;      border: 1px solid var(--line);      border-radius: .25rem;      background: var(--panel);    }    .review__stars { display: flex; gap: .15rem; }    .review__text { margin: 0; font-size: 1.0625rem; line-height: 1.45; }    .review__who {      display: flex;      align-items: center;      justify-content: space-between;      gap: .75rem;      margin-top: auto;      font-weight: 600;    }    .tag {      padding: .1rem .45rem;      border: 1px solid var(--muted);      border-radius: .2rem;      font-size: .75rem;      font-weight: 600;      letter-spacing: .06em;      text-transform: uppercase;      color: var(--muted);    }
-    /* ---------- Chat ---------- */    .chat {      display: flex;      flex-direction: column;      height: min(34rem, 80vh);      height: min(34rem, 80svh);      overflow: hidden;      border: 1px solid var(--line);      border-radius: .25rem;      background: var(--panel);    }    .chat__demo {      margin: 0;      padding: .6rem 1rem;      border-bottom: 1px solid var(--line);      background: rgb(245 196 0 / .12);      color: var(--signal);      font-size: .9375rem;    }    .chat__start { display: flex; flex: 1; align-items: center; justify-content: center; padding: 1.5rem; }    .chat__start-form { display: grid; gap: .9rem; width: min(100%, 24rem); }    .chat__subtitle { margin: 0; font-size: 1.5rem; font-weight: 800; text-transform: uppercase; }    .chat__start-form label { font-weight: 600; }    .fineprint { margin: 0; font-size: .875rem; color: var(--muted); }
-    .chat__conv { display: flex; flex: 1; flex-direction: column; min-height: 0; }    .chat__bar {      display: flex;      flex-wrap: wrap;      align-items: baseline;      justify-content: space-between;      gap: .25rem 1rem;      padding: .8rem 1rem;      border-bottom: 1px solid var(--line);    }    .chat__bar-title { font-weight: 800; text-transform: uppercase; }    .chat__bar-sub { color: var(--muted); font-size: .9375rem; }
-    .chat__log {      display: flex;      flex: 1;      flex-direction: column;      gap: .5rem;      min-height: 0;      margin: 0;      padding: 1rem;      overflow-y: auto;      overscroll-behavior: contain;      list-style: none;    }    .msg {      display: flex;      flex-direction: column;      gap: .2rem;      max-width: 82%;      padding: .6rem .8rem;      border-radius: .5rem;    }    .msg--cliente { align-self: flex-end; background: var(--signal); color: var(--ink); border-bottom-right-radius: .15rem; }    .msg--taller  { align-self: flex-start; background: #343840; border-bottom-left-radius: .15rem; }    .msg--nota {      align-self: center;      max-width: 92%;      padding: .25rem;      background: none;      color: var(--muted);      font-size: .9375rem;      text-align: center;    }    .msg__texto { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }    .msg__hora { align-self: flex-end; font-size: .75rem; opacity: .7; }
-    .chat__composer {      display: flex;      align-items: flex-end;      gap: .5rem;      padding: .75rem;      border-top: 1px solid var(--line);    }    .field {      width: 100%;      min-height: 3rem;      padding: .7rem .9rem;      border: 1px solid var(--line);      border-radius: .25rem;      background: var(--asphalt);      color: var(--paint);      font: 500 1rem/1.4 var(--font);    }    .chat__composer .field { flex: 1; max-height: 9rem; resize: none; }    .chat__aviso { margin: 0; padding: 0 1rem .75rem; color: #ffb4a8; font-size: .9375rem; }    .chat__aviso:empty { display: none; }
-    .footer {      display: flex;      flex-wrap: wrap;      justify-content: space-between;      gap: .5rem 1.5rem;      padding: 1.5rem var(--pad);      border-top: 1px solid var(--line);      color: var(--muted);      font-size: .9375rem;    }    .footer p { margin: 0; }
-    /* ---------- Entrada del hero (una sola secuencia al cargar) ---------- */    @media (prefers-reduced-motion: no-preference) {      .line > span {        transform: translateY(105%);        animation: rise .9s cubic-bezier(.16, .84, .3, 1) forwards;      }      .line:nth-child(2) > span { animation-delay: .12s; }      .hero .tagline { animation: fade .8s .55s both; }      .hero .actions { animation: fade .8s .75s both; }
-      .carousel__track { animation: scroll var(--dur, 60s) linear infinite; }    }    @keyframes rise { to { transform: none; } }    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }    @keyframes scroll { to { transform: translateX(-50%); } }
-    /* Con movimiento reducido el carrusel no gira: se desliza con el dedo o el teclado */    @media (prefers-reduced-motion: reduce) {      html { scroll-behavior: auto; }      .carousel {        overflow-x: auto;        -webkit-mask-image: none;                mask-image: none;      }      .carousel [data-clon], #carrusel-pausa { display: none; }    }
-    /* ---------- Móvil ---------- */    @media (max-width: 800px) {      .menu-toggle { display: block; }      .header__cta { display: none; }      .nav {        position: fixed;        top: calc(var(--header-h) + env(safe-area-inset-top));        left: 0;        right: 0;        display: none;        flex-direction: column;        align-items: stretch;        gap: 0;        padding: .5rem var(--pad) 1.5rem;        border-bottom: 1px solid var(--line);        background: var(--asphalt);      }      .nav.is-open { display: flex; }      .nav__link { padding: 1rem 0; border-bottom: 1px solid var(--line); font-size: 1.25rem; }      .nav__cta { display: inline-flex; margin-top: 1.25rem; }      .hero::before {        background: linear-gradient(180deg, rgb(26 28 31 / .55), rgb(26 28 31 / .8));      }    }  </style></head>
-<body>  <header class="site-header" id="cabecera">    <a class="brand" href="#inicio">Taller Ruedas</a>    <nav class="nav" id="menu" aria-label="Principal">      <a class="nav__link" href="#ubicacion">Ubicación</a>      <a class="nav__link" href="#resenas">Reseñas</a>      <a class="nav__link" href="#chat">Chat</a>      <a class="btn btn--signal nav__cta" href="#chat" data-abrir-chat>Escribir al taller</a>    </nav>    <a class="btn btn--signal btn--small header__cta" href="#chat" data-abrir-chat>Escribir al taller</a>    <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="menu">      <span class="sr-only">Menú</span>      <span class="menu-toggle__bars" aria-hidden="true"></span>    </button>  </header>
-  <main>    <!-- ================= INICIO ================= -->    <section class="hero" id="inicio">      <div class="hero__copy">        <h1 class="outline headline">          <span class="line"><span>¿Todo va</span></span>          <span class="line"><span>sobre ruedas?</span></span>        </h1>        <p class="outline tagline">Si no es así, nosotros nos encargamos</p>        <div class="actions">          <a class="btn btn--signal" href="#chat" data-abrir-chat>Escribir al taller</a>          <a class="link" href="#ubicacion">Ver dónde estamos</a>        </div>      </div>      <div class="road" aria-hidden="true"></div>    </section>
-    <!-- ================= UBICACIÓN ================= -->    <section class="section" id="ubicacion" aria-labelledby="ubicacion-titulo">      <div class="section__inner split">        <div>          <h2 class="section__title" id="ubicacion-titulo">Dónde estamos</h2>          <p class="status" data-estado role="status">            <span class="status__dot" aria-hidden="true"></span>            <span class="status__texto"></span>          </p>          <address class="address" id="direccion"></address>          <dl class="hours" id="horario"></dl>          <div class="actions">            <a class="btn btn--signal" id="btn-ruta" href="#" target="_blank" rel="noopener">Cómo llegar</a>            <a class="btn btn--ghost" href="#" data-telefono>Llamar</a>          </div>        </div>        <div class="map">          <iframe id="mapa" title="Mapa con la ubicación del taller" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>        </div>      </div>    </section>
-    <!-- ================= RESEÑAS ================= -->    <section class="section section--alt" id="resenas" aria-labelledby="resenas-titulo">      <div class="section__inner">        <div class="section__head">          <h2 class="section__title" id="resenas-titulo">Opiniones</h2>          <button class="btn btn--ghost btn--small" id="carrusel-pausa" type="button">Pausar</button>        </div>        <p class="note" id="resenas-nota" hidden>          Estas reseñas son de ejemplo para ver el diseño. Se sustituyen por opiniones reales de clientes antes de publicar la web.        </p>      </div>      <div class="carousel" id="carrusel" role="region" aria-label="Opiniones de clientes">        <ul class="carousel__track" id="carrusel-pista"></ul>      </div>    </section>
-    <!-- ================= CHAT ================= -->    <section class="section" id="chat" aria-labelledby="chat-titulo">      <div class="section__inner split">        <div>          <h2 class="section__title" id="chat-titulo">Escribe al taller</h2>          <p class="lead">Cuéntanos qué le pasa a tu coche. El taller te contesta aquí mismo.</p>          <p class="status" data-estado>            <span class="status__dot" aria-hidden="true"></span>            <span class="status__texto"></span>          </p>          <p class="lead">¿Prefieres hablar? <a href="#" data-telefono="texto">Llamar</a></p>        </div>
-        <div class="chat" id="chat-panel">          <p class="chat__demo" id="chat-demo" hidden>            Modo demostración: este chat aún no está conectado al taller. Los mensajes solo se guardan en este navegador.          </p>
-          <div class="chat__start" id="chat-inicio">            <form class="chat__start-form" id="chat-form-inicio">              <h3 class="chat__subtitle">Empieza la conversación</h3>              <label for="chat-nombre">Tu nombre</label>              <input class="field" id="chat-nombre" name="nombre" type="text" maxlength="60" required autocomplete="given-name">              <button class="btn btn--signal" type="submit">Empezar chat</button>              <p class="fineprint">El taller verá tu nombre y los mensajes que escribas.</p>            </form>          </div>
-          <div class="chat__conv" id="chat-conv" hidden>            <div class="chat__bar">              <span class="chat__bar-title">Taller Ruedas</span>              <span class="chat__bar-sub" id="chat-quien"></span>            </div>            <ol class="chat__log" id="chat-log" aria-label="Mensajes" aria-live="polite"></ol>            <form class="chat__composer" id="chat-form">              <label class="sr-only" for="chat-input">Mensaje</label>              <textarea class="field" id="chat-input" rows="1" maxlength="2000" placeholder="Escribe tu mensaje" required></textarea>              <button class="btn btn--signal" id="chat-enviar" type="submit">Enviar</button>            </form>          </div>
-          <p class="chat__aviso" id="chat-aviso" role="alert"></p>        </div>      </div>    </section>  </main>
-  <footer class="footer">    <p>© 2026 Taller Ruedas</p>    <a href="taller.html">Acceso del taller</a>  </footer>
-  <script src="config.js"></script>  <script>  (() => {    'use strict';
-    /* =====================================================================       DATOS DEL TALLER: cámbialos aquí. Todo lo de abajo se alimenta de esto.       ===================================================================== */    const TALLER = {      nombre: 'Taller Ruedas',      direccion: ['Calle del Cigüeñal 14', '28045 Madrid'],   // INVENTADA: poner la real      telefono: '+34910000000',                              // INVENTADO: poner el real      telefonoVisible: '910 000 000',      lat: 40.4168,                                          // coordenadas de ejemplo (centro de Madrid)      lng: -3.7038,      // Horario por día (0 = domingo ... 6 = sábado). Cada tramo: [apertura, cierre].      horario: {        1: [['08:30', '18:30']],        2: [['08:30', '18:30']],        3: [['08:30', '18:30']],        4: [['08:30', '18:30']],        5: [['08:30', '18:30']],        6: [['09:00', '13:00']],        0: []      },      // Reseñas REALES de clientes (con su permiso). Mientras esté vacío,      // se muestran las de ejemplo y quedan marcadas como tales.      resenasReales: []      // formato: { usuario: 'Nombre', estrellas: 5, texto: 'Lo que dijo' }    };
-    const EJEMPLOS = [      { usuario: 'marta_g',     estrellas: 5, texto: 'Me avisaron antes de tocar nada de que el presupuesto subía y por qué. El coche estuvo listo el día que dijeron.' },      { usuario: 'Javi R.',     estrellas: 5, texto: 'Llegué con un ruido raro en la rueda delantera y lo encontraron a la primera. Trato claro y sin rodeos.' },      { usuario: 'carlos.mtz',  estrellas: 4, texto: 'Muy buen trabajo con los frenos. Tardaron algo más de lo previsto, pero me tuvieron al tanto por mensaje.' },      { usuario: 'Lucía P.',    estrellas: 5, texto: 'Pasé la ITV a la primera después de que me revisaran luces y neumáticos. Repetiré.' },      { usuario: 'pablo_88',    estrellas: 5, texto: 'Cambio de aceite y filtros rápido, y me explicaron qué más convenía mirar sin intentar venderme de más.' },      { usuario: 'Ana B.',      estrellas: 5, texto: 'Por fin un taller que te enseña la pieza vieja y te explica qué fallaba. Muy recomendable.' },      { usuario: 'rafa.ruedas', estrellas: 4, texto: 'Buen precio en neumáticos y alineación. El local es pequeño, pero te atienden enseguida.' },      { usuario: 'Nuria S.',    estrellas: 5, texto: 'Me solucionaron un problema de batería un sábado por la mañana. Un detalle que se agradece.' }    ];
-    /* ---------- Utilidades ---------- */    const $  = (s, r = document) => r.querySelector(s);    const $$ = (s, r = document) => [...r.querySelectorAll(s)];    const tactil = matchMedia('(pointer: coarse)');   // móvil o tableta: no se abre el teclado solo y Enter hace salto de línea    const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
-    /* =====================================================================       CABECERA: fondo al hacer scroll, menú móvil, sección activa       ===================================================================== */    const cabecera = $('#cabecera');    const menu = $('#menu');    const botonMenu = $('#menu-toggle');
-    function actualizarCabecera() {      cabecera.classList.toggle('is-solid', window.scrollY > 8 || menu.classList.contains('is-open'));    }    function abrirMenu(abierto) {      menu.classList.toggle('is-open', abierto);      botonMenu.setAttribute('aria-expanded', String(abierto));      actualizarCabecera();    }    botonMenu.addEventListener('click', () => abrirMenu(botonMenu.getAttribute('aria-expanded') !== 'true'));    menu.addEventListener('click', e => { if (e.target.closest('a')) abrirMenu(false); });    document.addEventListener('keydown', e => {      if (e.key === 'Escape' && menu.classList.contains('is-open')) { abrirMenu(false); botonMenu.focus(); }    });    matchMedia('(min-width: 801px)').addEventListener('change', e => { if (e.matches) abrirMenu(false); });    addEventListener('scroll', actualizarCabecera, { passive: true });    actualizarCabecera();
-    const enlacesNav = $$('.nav__link');    const observadorNav = new IntersectionObserver(entradas => {      entradas.forEach(en => {        if (!en.isIntersecting) return;        enlacesNav.forEach(a => {          if (en.target.id !== 'inicio' && a.hash === '#' + en.target.id) a.setAttribute('aria-current', 'true');          else a.removeAttribute('aria-current');        });      });    }, { rootMargin: '-40% 0px -55% 0px' });    ['inicio', 'ubicacion', 'resenas', 'chat'].forEach(id => observadorNav.observe(document.getElementById(id)));
-    /* =====================================================================       UBICACIÓN: dirección, horario, estado en vivo, mapa, botones       ===================================================================== */    const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];    const ORDEN = [1, 2, 3, 4, 5, 6, 0];    const aMinutos = h => { const [H, M] = h.split(':').map(Number); return H * 60 + M; };    const sinCero = h => h.replace(/^0/, '');    const capitalizar = s => s[0].toUpperCase() + s.slice(1);
-    function ahoraEnMadrid() {      const partes = new Intl.DateTimeFormat('en-US', {        timeZone: 'Europe/Madrid', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'      }).formatToParts(new Date());      const valor = tipo => partes.find(p => p.type === tipo).value;      const dia = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[valor('weekday')];      return { dia, min: Number(valor('hour')) * 60 + Number(valor('minute')) };    }
-    function estadoTaller() {      const { dia, min } = ahoraEnMadrid();      const hoy = TALLER.horario[dia] || [];      const tramo = hoy.find(([a, c]) => min >= aMinutos(a) && min < aMinutos(c));      if (tramo) return { abierto: true, texto: `Abierto ahora, cerramos a las ${sinCero(tramo[1])}` };      const proximo = hoy.find(([a]) => aMinutos(a) > min);      if (proximo) return { abierto: false, texto: `Cerrado ahora, abrimos hoy a las ${sinCero(proximo[0])}` };      for (let i = 1; i <= 7; i++) {        const d = (dia + i) % 7;        const tramos = TALLER.horario[d] || [];        if (tramos.length) {          const cuando = i === 1 ? 'mañana' : 'el ' + DIAS[d];          return { abierto: false, texto: `Cerrado ahora, abrimos ${cuando} a las ${sinCero(tramos[0][0])}` };        }      }      return { abierto: false, texto: 'Cerrado ahora' };    }
-    function pintarEstado() {      const e = estadoTaller();      $$('[data-estado]').forEach(el => {        el.dataset.abierto = String(e.abierto);        $('.status__texto', el).textContent = e.texto;      });    }
-    function pintarHorario() {      const filas = ORDEN.map(d => ({        d,        txt: (TALLER.horario[d] || []).map(([a, c]) => `${sinCero(a)} a ${sinCero(c)}`).join(' y ') || 'Cerrado'      }));      const grupos = [];      filas.forEach(f => {        const g = grupos[grupos.length - 1];        if (g && g.txt === f.txt) g.fin = f.d; else grupos.push({ ini: f.d, fin: f.d, txt: f.txt });      });      $('#horario').replaceChildren(...grupos.map(g => {        const fila = document.createElement('div');        fila.className = 'hours__row';        const dt = document.createElement('dt');        dt.textContent = g.ini === g.fin ? capitalizar(DIAS[g.ini]) : `${capitalizar(DIAS[g.ini])} a ${DIAS[g.fin]}`;        const dd = document.createElement('dd');        dd.textContent = g.txt;        fila.append(dt, dd);        return fila;      }));    }
-    function pintarUbicacion() {      const { lat, lng } = TALLER;      const caja = [lng - 0.006, lat - 0.004, lng + 0.006, lat + 0.004].map(n => n.toFixed(5)).join('%2C');      $('#mapa').src = `https://www.openstreetmap.org/export/embed.html?bbox=${caja}&layer=mapnik&marker=${lat}%2C${lng}`;      $('#btn-ruta').href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;      $('#direccion').replaceChildren(...TALLER.direccion.flatMap((linea, i) => i ? [document.createElement('br'), linea] : [linea]));      $$('[data-telefono]').forEach(a => {        a.href = 'tel:' + TALLER.telefono;        if (a.dataset.telefono === 'texto') a.textContent = 'Llama al ' + TALLER.telefonoVisible;      });    }
-    pintarUbicacion();    pintarHorario();    pintarEstado();    setInterval(pintarEstado, 60000);
-    /* =====================================================================       RESEÑAS: carrusel horizontal infinito       ===================================================================== */    const estrella = on =>      `<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><polygon points="10,1.6 12.4,7.2 18.5,7.8 13.9,11.8 15.3,17.8 10,14.7 4.7,17.8 6.1,11.8 1.5,7.8 7.6,7.2" fill="${on ? 'var(--signal)' : 'none'}" stroke="var(--signal)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
-    function tarjetaResena(r, clon) {      const li = document.createElement('li');      li.className = 'review';      if (clon) { li.setAttribute('aria-hidden', 'true'); li.dataset.clon = ''; }
-      const estrellas = document.createElement('div');      estrellas.className = 'review__stars';      estrellas.setAttribute('role', 'img');      estrellas.setAttribute('aria-label', `${r.estrellas} de 5 estrellas`);      estrellas.innerHTML = [1, 2, 3, 4, 5].map(n => estrella(n <= r.estrellas)).join('');
-      const texto = document.createElement('p');      texto.className = 'review__text';      texto.textContent = r.texto;
-      const quien = document.createElement('div');      quien.className = 'review__who';      const usuario = document.createElement('span');      usuario.textContent = r.usuario;      quien.append(usuario);      if (r.ejemplo) {        const marca = document.createElement('span');        marca.className = 'tag';        marca.textContent = 'Ejemplo';        quien.append(marca); 
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Taller Ruedas</title>
+  <meta name="description" content="Taller de coches. Cuéntanos qué le pasa al tuyo y nos encargamos.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="preload" as="image" href="img/hero.jpg" fetchpriority="high">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Variables (estilo Apple: fondos claros, azul de sistema, esquinas redondeadas) ---------- */
+    :root {
+      --bg:      #ffffff;
+      --alt:     #f5f5f7;   /* gris Apple para franjas y agrupaciones */
+      --ink:     #1d1d1f;
+      --muted:   #6e6e73;
+      --line:    rgb(0 0 0 / .1);
+      --accent:  #0071e3;   /* azul de sistema: único color de acción */
+      --accent-hover: #0077ed;
+      --accent-soft:  rgb(0 113 227 / .1);
+      --star:    #ff9f0a;
+      --open:    #34c759;
+      --danger:  #d70015;
+      --pad:     clamp(1.25rem, 5vw, 4rem);
+      --r-lg:    1.75rem;
+      --r-md:    1.25rem;
+      --r-sm:    .875rem;
+      --shadow:  0 1px 2px rgb(0 0 0 / .04), 0 10px 32px rgb(0 0 0 / .08);
+      --ease:    cubic-bezier(.32, .72, 0, 1);
+      --font:    "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --font-main: var(--font); /* para volver a Montserrat dentro del hero */
+      --font-hero: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif; /* solo el hero */
+
+      /* Foto panorámica: deciden qué parte se ve. En móvil se centra en el coche. */
+      --hero-pos: 10% center;
+      --hero-pos-m: 52% center;
+    }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+      -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 1rem/1.55 var(--font);
+      letter-spacing: -.005em;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; }
+    button, .btn { touch-action: manipulation; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
+    /* ---------- Botones: píldoras ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: .7rem 1.5rem;
+      border: 0;
+      border-radius: 999px;
+      font: 500 1rem/1 var(--font);
+      letter-spacing: -.01em;
+      text-decoration: none;
+      cursor: pointer;
+      -webkit-user-select: none;
+              user-select: none;
+      transition: background-color .2s, color .2s, transform .12s var(--ease), translate .25s var(--ease), box-shadow .3s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn--signal { background: var(--accent); color: #fff; }
+    .btn--ghost  { background: var(--accent-soft); color: var(--accent); }
+    .btn--small  { min-height: 2.5rem; padding: .5rem 1.1rem; font-size: .9375rem; }
+
+    .link {
+      color: var(--accent);
+      font-size: 1.0625rem;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .link::after { content: "›"; margin-left: .3em; }
+
+    @media (hover: hover) {
+      .btn--signal:hover:not(:disabled) { background: var(--accent-hover); }
+      .btn--ghost:hover { background: rgb(0 113 227 / .16); }
+      .link:hover, .footer a:hover { text-decoration: underline; }
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem 1.75rem;
+      margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
+    }
+
+    /* ---------- Hero: la foto como tarjeta grande ---------- */
+    .hero {
+      --font: var(--font-hero); /* el hero conserva la tipografía Apple */
+      font-family: var(--font);
+      letter-spacing: -.011em;
+      position: relative;
+      isolation: isolate;
+      display: flex;
+      align-items: center;
+      min-height: clamp(30rem, 78vh, 50rem);
+      min-height: clamp(30rem, 78svh, 50rem);
+      margin: calc(.75rem + env(safe-area-inset-top)) var(--pad) 0;
+      padding: clamp(1.75rem, 6vw, 5rem);
+      overflow: hidden;
+      border-radius: var(--r-lg);
+      /* Foto: img/hero.jpg. Mientras no exista, se ven las capas de degradado de debajo */
+      background:
+        url("img/hero.jpg") var(--hero-pos) / cover no-repeat,
+        radial-gradient(70% 90% at 82% 45%, #e2e4ea 0%, rgb(226 228 234 / 0) 70%),
+        linear-gradient(135deg, #f5f5f7, #e6e6eb);
+    }
+    /* Velo claro a la izquierda: la pared de la nave es casi blanca y el texto oscuro se lee sin esfuerzo */
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(90deg, rgb(255 255 255 / .94) 0%, rgb(255 255 255 / .8) 40%, rgb(255 255 255 / .2) 70%, transparent 100%);
+    }
+    .hero__copy { max-width: 46rem; }
+    .hero .actions { --font: var(--font-main); font-family: var(--font); letter-spacing: -.005em; }
+
+    .outline { margin: 0; }
+    .headline {
+      font-size: clamp(2.75rem, 7.5vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.03;
+      letter-spacing: -.04em;
+    }
+    /* Cada línea es una máscara para la entrada */
+    .line {
+      display: block;
+      overflow: hidden;
+      padding: .08em .06em .14em;
+      margin: -.08em -.06em -.14em;
+    }
+    .line > span { display: block; }
+
+    .tagline {
+      max-width: 22em;
+      margin-top: clamp(1rem, 2vw, 1.5rem);
+      color: var(--muted);
+      font-size: clamp(1.1875rem, 1.2vw + .8rem, 1.75rem);
+      font-weight: 500;
+      line-height: 1.25;
+      letter-spacing: -.02em;
+      text-wrap: balance;
+    }
+    .road { display: none; }
+
+    /* ---------- Secciones ---------- */
+    .section { padding: clamp(4rem, 9vw, 7rem) var(--pad); }
+    .section--alt { background: var(--alt); }
+    /* Reseñas: el gris se funde con el blanco de arriba y de abajo, sin corte seco */
+    #resenas { background: linear-gradient(180deg, var(--bg) 0%, var(--alt) 24%, var(--alt) 76%, var(--bg) 100%); }
+    .section__inner { max-width: 72rem; margin-inline: auto; }
+    .section__head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem 2rem;
+    }
+    .section__title {
+      margin: 0;
+      font-size: clamp(1.875rem, 3.6vw + .75rem, 3.25rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -.025em;
+      text-wrap: balance;
+    }
+    .lead { max-width: 30rem; margin: 1rem 0 0; font-size: 1.125rem; line-height: 1.45; color: var(--muted); }
+    .lead a { color: var(--accent); text-decoration: none; white-space: nowrap; }
+    .note { max-width: 40rem; margin: 1rem 0 0; color: var(--muted); }
+
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .split { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+    }
+
+    /* Estado abierto / cerrado */
+    .status { display: flex; align-items: center; gap: .6rem; margin: 1rem 0 0; color: var(--muted); }
+    .status__dot { flex: none; width: .6rem; height: .6rem; border-radius: 50%; background: #aeaeb2; }
+    .status[data-abierto="true"] { color: var(--ink); }
+    .status[data-abierto="true"] .status__dot { background: var(--open); box-shadow: 0 0 0 4px rgb(52 199 89 / .2); }
+
+    /* Ubicación: horario como lista agrupada de iOS */
+    .address { margin: 1.5rem 0 0; font-size: 1.25rem; font-weight: 500; font-style: normal; line-height: 1.35; letter-spacing: -.01em; }
+    .hours { display: grid; margin: 1.5rem 0 0; padding: .25rem 1.1rem; border-radius: var(--r-md); background: var(--alt); }
+    .hours__row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .75rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .hours__row:last-child { border-bottom: 0; }
+    .hours__row dt { font-weight: 500; }
+    .hours__row dd { margin: 0; color: var(--muted); text-align: right; }
+    .map {
+      height: clamp(18rem, 45vw, 30rem);
+      overflow: hidden;
+      border-radius: var(--r-lg);
+      background: var(--alt);
+      box-shadow: var(--shadow);
+    }
+    .map iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+    /* ---------- Carrusel de reseñas ---------- */
+    .carousel {
+      overflow: hidden;
+      margin-top: 1.5rem;
+      padding: 1rem 0 2rem; /* espacio para que la sombra de las tarjetas no se recorte */
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+              mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    }
+    .carousel__track {
+      display: flex;
+      gap: 1rem;
+      width: max-content;
+      margin: 0;
+      padding: 0 1rem 0 0;
+      list-style: none;
+    }
+    .carousel:hover .carousel__track { animation-play-state: paused; }
+
+    .review {
+      display: flex;
+      flex: 0 0 20rem;
+      flex-direction: column;
+      gap: .9rem;
+      padding: 1.5rem;
+      border-radius: var(--r-lg);
+      background: var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .review__stars { display: flex; gap: .15rem; }
+    .review__text { margin: 0; font-size: 1rem; line-height: 1.45; }
+    .review__who {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: auto;
+      font-weight: 600;
+    }
+    .tag {
+      padding: .2rem .65rem;
+      border-radius: 999px;
+      background: rgb(0 0 0 / .06);
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 500;
+    }
+
+    /* ---------- Chat: estilo Mensajes ---------- */
+    .chat {
+      display: flex;
+      flex-direction: column;
+      height: min(36rem, 80vh);
+      height: min(36rem, 80svh);
+      overflow: hidden;
+      border-radius: var(--r-lg);
+      background: var(--bg);
+      box-shadow: 0 0 0 1px var(--line), var(--shadow);
+    }
+    .chat__demo {
+      margin: 0;
+      padding: .65rem 1rem;
+      background: rgb(255 159 10 / .14);
+      color: #8a4b00;
+      font-size: .875rem;
+    }
+    .chat__start { display: flex; flex: 1; flex-direction: column; padding: clamp(1.25rem, 3vw, 1.75rem); }
+    .chat__title { margin: 0; padding-bottom: 1rem; border-bottom: 1px solid var(--line); font-size: 1.125rem; font-weight: 600; }
+    .chat__start-form { display: grid; gap: .4rem; width: 100%; margin-top: 1.25rem; }
+    .chat__start-form label { margin-top: .6rem; font-weight: 600; font-size: .875rem; }
+    .chat__start-form label:first-child { margin-top: 0; }
+    .chat__start-form textarea.field { min-height: 7.5rem; resize: vertical; }
+    .chat__start-form .btn { width: 100%; margin-top: 1.1rem; }
+    .chat__start-form .fineprint { margin-top: .35rem; }
+    /* Con el formulario visible, el panel crece con su contenido; la conversación sí tiene altura fija */
+    .chat:has(#chat-inicio:not([hidden])) { height: auto; }
+    .fineprint { margin: 0; font-size: .8125rem; color: var(--muted); }
+
+    .chat__conv { display: flex; flex: 1; flex-direction: column; min-height: 0; }
+    .chat__bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: .25rem 1rem;
+      padding: .85rem 1.25rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--alt);
+    }
+    .chat__bar-title { font-weight: 600; }
+    .chat__bar-sub { color: var(--muted); font-size: .875rem; }
+
+    .chat__log {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: .4rem;
+      min-height: 0;
+      margin: 0;
+      padding: 1rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      list-style: none;
+    }
+    .msg {
+      display: flex;
+      flex-direction: column;
+      gap: .15rem;
+      max-width: 80%;
+      padding: .55rem .95rem;
+      border-radius: 1.25rem;
+    }
+    .msg--cliente { align-self: flex-end; background: var(--accent); color: #fff; border-bottom-right-radius: .4rem; }
+    .msg--taller  { align-self: flex-start; background: #e9e9eb; color: var(--ink); border-bottom-left-radius: .4rem; }
+    .msg--nota {
+      align-self: center;
+      max-width: 92%;
+      padding: .25rem;
+      background: none;
+      color: var(--muted);
+      font-size: .875rem;
+      text-align: center;
+    }
+    .msg__texto { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .msg__hora { align-self: flex-end; font-size: .6875rem; opacity: .7; }
+
+    .chat__composer {
+      display: flex;
+      align-items: flex-end;
+      gap: .5rem;
+      padding: .75rem;
+      border-top: 1px solid var(--line);
+      background: var(--alt);
+    }
+    .field {
+      width: 100%;
+      min-height: 3rem;
+      padding: .7rem 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--r-sm);
+      background: var(--alt);
+      color: var(--ink);
+      font: 400 1rem/1.4 var(--font); /* 16px: iOS no hace zoom al enfocar */
+      transition: border-color .2s, box-shadow .2s, background-color .2s, transform .3s var(--ease);
+    }
+    .field::placeholder { color: #86868b; }
+    .field:focus { outline: none; background: var(--bg); border-color: var(--accent); box-shadow: 0 0 0 4px rgb(0 113 227 / .2); transform: translateY(-1px); }
+    .chat__composer .field { flex: 1; max-height: 9rem; resize: none; border-radius: 1.5rem; background: var(--bg); border-color: rgb(0 0 0 / .12); }
+    .chat__aviso { margin: 0; padding: 0 1rem .75rem; color: var(--danger); font-size: .9375rem; }
+    .chat__aviso:empty { display: none; }
+
+    .footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: .5rem 1.5rem;
+      padding: 1.5rem var(--pad) calc(1.5rem + env(safe-area-inset-bottom));
+      background: var(--alt);
+      color: var(--muted);
+      font-size: .8125rem;
+    }
+    .footer p { margin: 0; }
+    .footer a { text-decoration: none; }
+
+    /* ---------- Contacto: tarjetas de datos ---------- */
+    .infos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-top: 1.75rem; }
+    .info { display: grid; gap: .25rem; padding: 1rem 1.25rem; border-radius: var(--r-md); background: var(--alt); transition: transform .5s var(--ease), background-color .3s; }
+    .info--ancho { grid-column: 1 / -1; }
+    .info__label { color: var(--muted); font-size: .8125rem; font-weight: 500; }
+    .info__valor { margin: 0; font-size: 1rem; font-weight: 600; font-style: normal; text-decoration: none; }
+    .info .status { margin: 0; }
+
+    /* ---------- Animaciones ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      /* Entrada al hacer scroll, escalonada (la añade el script) */
+      .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s var(--ease) var(--d, 0ms), transform .8s var(--ease) var(--d, 0ms); }
+      .map.reveal, .chat.reveal { transform: translateY(24px) scale(.97); }
+      .reveal.is-in { opacity: 1; transform: none; }
+
+      /* Los mensajes salen de su esquina, como en Mensajes */
+      .chat__log .msg { animation: msg-in .5s var(--ease) both; }
+      .msg--cliente { transform-origin: 100% 100%; }
+      .msg--taller  { transform-origin: 0 100%; }
+      .chat__conv:not([hidden]) .msg--nota { animation-delay: .3s; }
+
+      .status[data-abierto="true"] .status__dot { animation: ping 2.4s ease-out infinite; }
+      .review { transition: transform .5s var(--ease), box-shadow .5s; }
+      .link::after { display: inline-block; transition: transform .3s var(--ease); }
+
+      /* La tarjeta del hero se recoge al bajar (Chrome y Safari recientes) */
+      @supports (animation-timeline: scroll()) {
+        .hero { transform-origin: 50% 0; animation: hero-out linear both; animation-timeline: scroll(root); animation-range: 0 70vh; }
+      }
+      @media (hover: hover) {
+        .btn--signal:hover:not(:disabled) { translate: 0 -1px; box-shadow: 0 8px 22px rgb(0 113 227 / .32); }
+        .link:hover::after { transform: translateX(4px); }
+        .info:hover { transform: translateY(-2px); background: #ededf0; }
+        .review:hover { transform: translateY(-6px); box-shadow: 0 2px 4px rgb(0 0 0 / .05), 0 22px 48px rgb(0 0 0 / .14); }
+      }
+    }
+    @keyframes msg-in { from { opacity: 0; transform: translateY(10px) scale(.92); } }
+    @keyframes ping { from { box-shadow: 0 0 0 0 rgb(52 199 89 / .45); } to { box-shadow: 0 0 0 9px rgb(52 199 89 / 0); } }
+    @keyframes hero-out { to { transform: scale(.94); border-radius: 2.25rem; opacity: .88; } }
+
+    /* ---------- Contacto: etiqueta como en la referencia, adaptada al azul ---------- */
+    .eyebrow { display: flex; align-items: center; gap: .6rem; margin: 0 0 1rem; color: var(--accent); font-size: .8125rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 1.75rem; height: 2px; border-radius: 2px; background: currentColor; }
+
+    /* Botón en espera: ruedecita al pulsar "Empezar chat" */
+    .btn.is-loading { position: relative; color: transparent; pointer-events: none; }
+    .btn.is-loading::after { content: ""; position: absolute; width: 1.15rem; height: 1.15rem; border: 2px solid rgb(255 255 255 / .35); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* Resplandor azul que respira detrás del hero */
+      .hero::after { content: ""; position: absolute; inset: -25%; z-index: -1; pointer-events: none; background: radial-gradient(38% 42% at 74% 42%, rgb(0 113 227 / .16), transparent 70%); animation: glow 14s ease-in-out infinite alternate; }
+      /* El chat se ilumina al escribir en él */
+      .chat:not(.reveal) { transition: box-shadow .4s; }
+      .chat:focus-within { box-shadow: 0 0 0 1px rgb(0 113 227 / .35), 0 18px 50px rgb(0 113 227 / .14); }
+      /* Al empezar, cada pieza de la conversación entra en cadena */
+      .chat__conv:not([hidden]) .chat__bar { animation: drop-in .55s .12s var(--ease) both; }
+      .chat__conv:not([hidden]) .chat__composer { animation: rise-in .55s .22s var(--ease) both; }
+      /* El texto del hero se aparta suavemente al bajar */
+      @supports (animation-timeline: scroll()) {
+        .hero__copy { animation: copy-out linear both; animation-timeline: scroll(root); animation-range: 0 60vh; }
+      }
+    }
+    @keyframes glow { to { transform: translate(-6%, 8%) scale(1.15); } }
+    @keyframes drop-in { from { opacity: 0; transform: translateY(-12px); } }
+    @keyframes rise-in { from { opacity: 0; transform: translateY(14px); } }
+    @keyframes copy-out { to { transform: translateY(-2.5rem); opacity: .3; } }
+
+    /* ---------- Entrada del hero (una sola secuencia al cargar) ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      .line > span {
+        transform: translateY(105%);
+        animation: rise 1s var(--ease) forwards;
+      }
+      .line:nth-child(2) > span { animation-delay: .1s; }
+      .hero .tagline { animation: fade .9s .5s both; }
+      .hero .actions { animation: fade .9s .7s both; }
+
+      .carousel__track { animation: scroll var(--dur, 60s) linear infinite; }
+    }
+    @keyframes rise { to { transform: none; } }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scroll { to { transform: translateX(-50%); } }
+
+    /* Con movimiento reducido el carrusel no gira: se desliza con el dedo o el teclado */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn:active { transform: none; }
+      .carousel {
+        overflow-x: auto;
+        -webkit-mask-image: none;
+                mask-image: none;
+      }
+      .carousel [data-clon] { display: none; }
+    }
+
+    /* ---------- Móvil ---------- */
+    @media (max-width: 800px) {
+      .hero {
+        align-items: flex-end;
+        margin-inline: .75rem;
+        border-radius: 1.5rem;
+        background-position: var(--hero-pos-m), center, center;
+      }
+      .hero::before {
+        background: linear-gradient(180deg, rgb(255 255 255 / .35) 0%, rgb(255 255 255 / 0) 28%, rgb(255 255 255 / .88) 64%, #fff 100%);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <!-- ================= INICIO ================= -->
+    <section class="hero" id="inicio">
+      <div class="hero__copy">
+        <h1 class="outline headline">
+          <span class="line"><span>¿Todo va</span></span>
+          <span class="line"><span>sobre ruedas?</span></span>
+        </h1>
+        <p class="outline tagline">Si no es así, nosotros nos encargamos</p>
+        <div class="actions">
+          <a class="btn btn--signal" href="#chat" data-abrir-chat>Escribir al taller</a>
+          <a class="link" href="#ubicacion">Ver dónde estamos</a>
+        </div>
+      </div>
+      <div class="road" aria-hidden="true"></div>
+    </section>
+
+    <!-- ================= UBICACIÓN ================= -->
+    <section class="section" id="ubicacion" aria-labelledby="ubicacion-titulo">
+      <div class="section__inner split">
+        <div>
+          <h2 class="section__title" id="ubicacion-titulo">Dónde estamos</h2>
+          <address class="address" id="direccion"></address>
+          <p class="status" data-estado role="status">
+            <span class="status__dot" aria-hidden="true"></span>
+            <span class="status__texto"></span>
+          </p>
+          <dl class="hours" id="horario"></dl>
+          <div class="actions">
+            <a class="btn btn--signal" id="btn-ruta" href="#" target="_blank" rel="noopener">Cómo llegar</a>
+            <a class="btn btn--ghost" href="#" data-telefono>Llamar</a>
+          </div>
+        </div>
+        <div class="map">
+          <iframe id="mapa" title="Mapa con la ubicación del taller" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= RESEÑAS ================= -->
+    <section class="section section--alt" id="resenas" aria-labelledby="resenas-titulo">
+      <div class="section__inner">
+        <div class="section__head">
+          <h2 class="section__title" id="resenas-titulo">Opiniones</h2>
+        </div>
+        <p class="note" id="resenas-nota" hidden>
+          Estas reseñas son de ejemplo para ver el diseño. Se sustituyen por opiniones reales de clientes antes de publicar la web.
+        </p>
+      </div>
+      <div class="carousel" id="carrusel" role="region" aria-label="Opiniones de clientes">
+        <ul class="carousel__track" id="carrusel-pista"></ul>
+      </div>
+    </section>
+
+    <!-- ================= CHAT ================= -->
+    <section class="section" id="chat" aria-labelledby="chat-titulo">
+      <div class="section__inner split">
+        <div>
+          <p class="eyebrow">Contacto</p>
+          <h2 class="section__title" id="chat-titulo">Escribe al taller</h2>
+          <p class="lead">Cuéntanos qué le pasa a tu coche. El taller te contesta aquí mismo.</p>
+          <div class="infos">
+            <div class="info">
+              <span class="info__label">Teléfono</span>
+              <a class="info__valor" href="#" data-telefono="numero"></a>
+            </div>
+            <div class="info">
+              <span class="info__label">Horario</span>
+              <p class="status info__valor" data-estado>
+                <span class="status__dot" aria-hidden="true"></span>
+                <span class="status__texto"></span>
+              </p>
+            </div>
+            <div class="info info--ancho">
+              <span class="info__label">Ubicación</span>
+              <address class="info__valor" id="chat-direccion"></address>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat" id="chat-panel">
+          <p class="chat__demo" id="chat-demo" hidden>
+            Modo demostración: este chat aún no está conectado al taller. Los mensajes solo se guardan en este navegador.
+          </p>
+
+          <div class="chat__start" id="chat-inicio">
+            <h3 class="chat__title">Escríbenos</h3>
+            <form class="chat__start-form" id="chat-form-inicio">
+              <label for="chat-nombre">Nombre</label>
+              <input class="field" id="chat-nombre" name="nombre" type="text" maxlength="60" required autocomplete="name" placeholder="Tu nombre completo">
+              <label for="chat-telefono">Teléfono</label>
+              <input class="field" id="chat-telefono" name="telefono" type="tel" maxlength="30" autocomplete="tel" placeholder="Tu número de teléfono">
+              <label for="chat-email">Email</label>
+              <input class="field" id="chat-email" name="email" type="email" maxlength="80" autocomplete="email" placeholder="Tu correo electrónico">
+              <label for="chat-mensaje">¿En qué podemos ayudarte?</label>
+              <textarea class="field" id="chat-mensaje" name="mensaje" rows="4" maxlength="1500" required placeholder="Cuéntanos qué le pasa a tu coche o qué necesitas"></textarea>
+              <button class="btn btn--signal" type="submit">Enviar mensaje</button>
+              <p class="fineprint">El taller verá estos datos y te contestará aquí mismo, en la conversación.</p>
+            </form>
+          </div>
+
+          <div class="chat__conv" id="chat-conv" hidden>
+            <div class="chat__bar">
+              <span class="chat__bar-title">Taller Ruedas</span>
+              <span class="chat__bar-sub" id="chat-quien"></span>
+            </div>
+            <ol class="chat__log" id="chat-log" aria-label="Mensajes" aria-live="polite"></ol>
+            <form class="chat__composer" id="chat-form">
+              <label class="sr-only" for="chat-input">Mensaje</label>
+              <textarea class="field" id="chat-input" rows="1" maxlength="2000" placeholder="Escribe tu mensaje" required></textarea>
+              <button class="btn btn--signal" id="chat-enviar" type="submit">Enviar</button>
+            </form>
+          </div>
+
+          <p class="chat__aviso" id="chat-aviso" role="alert"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Taller Ruedas</p>
+    <a href="taller.html">Acceso del taller</a>
+  </footer>
+
+  <script src="config.js"></script>
+  <script>
+  (() => {
+    'use strict';
+
+    /* =====================================================================
+       DATOS DEL TALLER: cámbialos aquí. Todo lo de abajo se alimenta de esto.
+       ===================================================================== */
+    const TALLER = {
+      nombre: 'Taller Ruedas',
+      direccion: ['Calle del Cigüeñal 14', '28045 Madrid'],   // INVENTADA: poner la real
+      telefono: '+34910000000',                              // INVENTADO: poner el real
+      telefonoVisible: '910 000 000',
+      lat: 40.4168,                                          // coordenadas de ejemplo (centro de Madrid)
+      lng: -3.7038,
+      // Horario por día (0 = domingo ... 6 = sábado). Cada tramo: [apertura, cierre].
+      horario: {
+        1: [['08:30', '18:30']],
+        2: [['08:30', '18:30']],
+        3: [['08:30', '18:30']],
+        4: [['08:30', '18:30']],
+        5: [['08:30', '18:30']],
+        6: [['09:00', '13:00']],
+        0: []
+      },
+      // Reseñas REALES de clientes (con su permiso). Mientras esté vacío,
+      // se muestran las de ejemplo y quedan marcadas como tales.
+      resenasReales: []
+      // formato: { usuario: 'Nombre', estrellas: 5, texto: 'Lo que dijo' }
+    };
+
+    const EJEMPLOS = [
+      { usuario: 'marta_g',     estrellas: 5, texto: 'Me avisaron antes de tocar nada de que el presupuesto subía y por qué. El coche estuvo listo el día que dijeron.' },
+      { usuario: 'Javi R.',     estrellas: 5, texto: 'Llegué con un ruido raro en la rueda delantera y lo encontraron a la primera. Trato claro y sin rodeos.' },
+      { usuario: 'carlos.mtz',  estrellas: 4, texto: 'Muy buen trabajo con los frenos. Tardaron algo más de lo previsto, pero me tuvieron al tanto por mensaje.' },
+      { usuario: 'Lucía P.',    estrellas: 5, texto: 'Pasé la ITV a la primera después de que me revisaran luces y neumáticos. Repetiré.' },
+      { usuario: 'pablo_88',    estrellas: 5, texto: 'Cambio de aceite y filtros rápido, y me explicaron qué más convenía mirar sin intentar venderme de más.' },
+      { usuario: 'Ana B.',      estrellas: 5, texto: 'Por fin un taller que te enseña la pieza vieja y te explica qué fallaba. Muy recomendable.' },
+      { usuario: 'rafa.ruedas', estrellas: 4, texto: 'Buen precio en neumáticos y alineación. El local es pequeño, pero te atienden enseguida.' },
+      { usuario: 'Nuria S.',    estrellas: 5, texto: 'Me solucionaron un problema de batería un sábado por la mañana. Un detalle que se agradece.' }
+    ];
+
+    /* ---------- Utilidades ---------- */
+    const $  = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const tactil = matchMedia('(pointer: coarse)');   // móvil o tableta: no se abre el teclado solo y Enter hace salto de línea
+    const sinMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+
+    /* =====================================================================
+       UBICACIÓN: dirección, horario, estado en vivo, mapa, botones
+       ===================================================================== */
+    const DIAS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    const ORDEN = [1, 2, 3, 4, 5, 6, 0];
+    const aMinutos = h => { const [H, M] = h.split(':').map(Number); return H * 60 + M; };
+    const sinCero = h => h.replace(/^0/, '');
+    const capitalizar = s => s[0].toUpperCase() + s.slice(1);
+
+    function ahoraEnMadrid() {
+      const partes = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Madrid', weekday: 'short', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+      }).formatToParts(new Date());
+      const valor = tipo => partes.find(p => p.type === tipo).value;
+      const dia = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[valor('weekday')];
+      return { dia, min: Number(valor('hour')) * 60 + Number(valor('minute')) };
+    }
+
+    function estadoTaller() {
+      const { dia, min } = ahoraEnMadrid();
+      const hoy = TALLER.horario[dia] || [];
+      const tramo = hoy.find(([a, c]) => min >= aMinutos(a) && min < aMinutos(c));
+      if (tramo) return { abierto: true, texto: `Abierto ahora, cerramos a las ${sinCero(tramo[1])}` };
+      const proximo = hoy.find(([a]) => aMinutos(a) > min);
+      if (proximo) return { abierto: false, texto: `Cerrado ahora, abrimos hoy a las ${sinCero(proximo[0])}` };
+      for (let i = 1; i <= 7; i++) {
+        const d = (dia + i) % 7;
+        const tramos = TALLER.horario[d] || [];
+        if (tramos.length) {
+          const cuando = i === 1 ? 'mañana' : 'el ' + DIAS[d];
+          return { abierto: false, texto: `Cerrado ahora, abrimos ${cuando} a las ${sinCero(tramos[0][0])}` };
+        }
+      }
+      return { abierto: false, texto: 'Cerrado ahora' };
+    }
+
+    function pintarEstado() {
+      const e = estadoTaller();
+      $$('[data-estado]').forEach(el => {
+        el.dataset.abierto = String(e.abierto);
+        $('.status__texto', el).textContent = e.texto;
+      });
+    }
+
+    function pintarHorario() {
+      const filas = ORDEN.map(d => ({
+        d,
+        txt: (TALLER.horario[d] || []).map(([a, c]) => `${sinCero(a)} a ${sinCero(c)}`).join(' y ') || 'Cerrado'
+      }));
+      const grupos = [];
+      filas.forEach(f => {
+        const g = grupos[grupos.length - 1];
+        if (g && g.txt === f.txt) g.fin = f.d; else grupos.push({ ini: f.d, fin: f.d, txt: f.txt });
+      });
+      $('#horario').replaceChildren(...grupos.map(g => {
+        const fila = document.createElement('div');
+        fila.className = 'hours__row';
+        const dt = document.createElement('dt');
+        dt.textContent = g.ini === g.fin ? capitalizar(DIAS[g.ini]) : `${capitalizar(DIAS[g.ini])} a ${DIAS[g.fin]}`;
+        const dd = document.createElement('dd');
+        dd.textContent = g.txt;
+        fila.append(dt, dd);
+        return fila;
+      }));
+    }
+
+    function pintarUbicacion() {
+      const { lat, lng } = TALLER;
+      const caja = [lng - 0.006, lat - 0.004, lng + 0.006, lat + 0.004].map(n => n.toFixed(5)).join('%2C');
+      $('#mapa').src = `https://www.openstreetmap.org/export/embed.html?bbox=${caja}&layer=mapnik&marker=${lat}%2C${lng}`;
+      $('#btn-ruta').href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+      $('#direccion').replaceChildren(...TALLER.direccion.flatMap((linea, i) => i ? [document.createElement('br'), linea] : [linea]));
+      $('#chat-direccion').textContent = TALLER.direccion.join(', ');
+      $$('[data-telefono]').forEach(a => {
+        a.href = 'tel:' + TALLER.telefono;
+        if (a.dataset.telefono === 'texto') a.textContent = 'Llama al ' + TALLER.telefonoVisible;
+        else if (a.dataset.telefono === 'numero') a.textContent = TALLER.telefonoVisible;
+      });
+    }
+
+    pintarUbicacion();
+    pintarHorario();
+    pintarEstado();
+    setInterval(pintarEstado, 60000);
+
+    /* =====================================================================
+       RESEÑAS: carrusel horizontal infinito
+       ===================================================================== */
+    const estrella = on =>
+      `<svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><polygon points="10,1.6 12.4,7.2 18.5,7.8 13.9,11.8 15.3,17.8 10,14.7 4.7,17.8 6.1,11.8 1.5,7.8 7.6,7.2" fill="${on ? 'var(--star)' : 'none'}" stroke="var(--star)" stroke-width="1.2" stroke-linejoin="round"/></svg>`;
+
+    function tarjetaResena(r, clon) {
+      const li = document.createElement('li');
+      li.className = 'review';
+      if (clon) { li.setAttribute('aria-hidden', 'true'); li.dataset.clon = ''; }
+
+      const estrellas = document.createElement('div');
+      estrellas.className = 'review__stars';
+      estrellas.setAttribute('role', 'img');
+      estrellas.setAttribute('aria-label', `${r.estrellas} de 5 estrellas`);
+      estrellas.innerHTML = [1, 2, 3, 4, 5].map(n => estrella(n <= r.estrellas)).join('');
+
+      const texto = document.createElement('p');
+      texto.className = 'review__text';
+      texto.textContent = r.texto;
+
+      const quien = document.createElement('div');
+      quien.className = 'review__who';
+      const usuario = document.createElement('span');
+      usuario.textContent = r.usuario;
+      quien.append(usuario);
+      if (r.ejemplo) {
+        const marca = document.createElement('span');
+        marca.className = 'tag';
+        marca.textContent = 'Ejemplo';
+        quien.append(marca);
+      }
+
+      li.append(estrellas, texto, quien);
+      return li;
+    }
+
+    function pintarResenas() {
+      const reales = TALLER.resenasReales;
+      const lista = reales.length ? reales : EJEMPLOS.map(r => ({ ...r, ejemplo: true }));
+      $('#resenas-nota').hidden = reales.length > 0;
+      const pista = $('#carrusel-pista');
+      pista.replaceChildren(...lista.map(r => tarjetaResena(r, false)), ...lista.map(r => tarjetaResena(r, true)));
+      pista.style.setProperty('--dur', `${lista.length * 8}s`);
+    }
+
+    const carrusel = $('#carrusel');
+    if (sinMovimiento.matches) carrusel.tabIndex = 0;
+    pintarResenas();
+
+    /* =====================================================================
+       CHAT cliente-taller
+       - Con Supabase configurado en config.js: chat real con tiempo real.
+       - Sin configurar: modo demostración (mensajes solo en este navegador).
+       ===================================================================== */
+    const el = {
+      demo: $('#chat-demo'), inicio: $('#chat-inicio'), conv: $('#chat-conv'),
+      formInicio: $('#chat-form-inicio'), nombre: $('#chat-nombre'), telefono: $('#chat-telefono'),
+      email: $('#chat-email'), mensaje: $('#chat-mensaje'), quien: $('#chat-quien'),
+      log: $('#chat-log'), form: $('#chat-form'), input: $('#chat-input'),
+      enviar: $('#chat-enviar'), aviso: $('#chat-aviso')
+    };
+    const cfg = window.SUPABASE_CONFIG || {};
+    const conSupabase = Boolean(cfg.url && cfg.anonKey);
+    const CLAVE_DEMO = 'taller-demo-chat';
+    const vistos = new Set();
+    let db = null;
+    let conv = null;
+    let canal = null;
+    let arranque = null;
+    let errorInicio = null;
+
+    const avisar = texto => { el.aviso.textContent = texto; };
+
+    // Para quien configura Supabase: el error real siempre va a la consola del navegador (F12) y,
+    // si la dirección lleva ?debug, también al aviso del chat. Los clientes solo ven el mensaje genérico.
+    const DEBUG = new URLSearchParams(location.search).has('debug');
+    function diagnostico(err) {
+      const code = String((err && (err.code || err.error_code)) || '');
+      const msg = String((err && err.message) || err || '');
+      const m = msg.toLowerCase();
+      let causa = 'Causa no reconocida.';
+      if (code === 'anonymous_provider_disabled' || m.includes('anonymous sign-ins are disabled'))
+        causa = 'El acceso anónimo está desactivado: Supabase > Authentication > Sign In / Providers > Anonymous.';
+      else if (code === 'captcha_failed' || m.includes('captcha'))
+        causa = 'Supabase exige CAPTCHA y esta web todavía no lo envía: desactívalo en Authentication > Attack Protection.';
+      else if (code === 'PGRST205' || code === '42P01' || m.includes('schema cache') || m.includes('does not exist'))
+        causa = 'Faltan las tablas: ejecuta supabase/schema.sql entero en el SQL Editor.';
+      else if (code === '42501' || m.includes('row-level security') || m.includes('permission denied'))
+        causa = 'Permisos denegados: schema.sql no se aplicó completo (permisos o políticas RLS).';
+      else if (code === 'bad_jwt' || m.includes('invalid api key') || m.includes('invalid jwt') || m.includes('secret api key'))
+        causa = 'Clave incorrecta en config.js: usa la clave anon/publishable, nunca la secreta ni service_role.';
+      else if (m.includes('failed to fetch') || m.includes('networkerror') || m.includes('load failed'))
+        causa = 'No se llega a Supabase: revisa la URL de config.js (https://xxxx.supabase.co), la conexión o un bloqueador de contenido.';
+      return `${causa} [${code || 'sin código'}: ${msg}]`;
+    }
+    function reportarFallo(texto, err) {
+      const detalle = diagnostico(err);
+      console.error('[chat taller]', texto, '\n->', detalle, '\n', err);
+      avisar(DEBUG ? `${texto} (${detalle})` : texto);
+    }
+    const bloquear = (form, estado) => [...form.elements].forEach(c => { c.disabled = estado; });
+    const bajar = () => { el.log.scrollTop = el.log.scrollHeight; };
+    const hora = iso => new Date(iso).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const leerDemo = () => { try { return JSON.parse(localStorage.getItem(CLAVE_DEMO)); } catch { return null; } };
+    const guardarDemo = d => { try { localStorage.setItem(CLAVE_DEMO, JSON.stringify(d)); } catch { /* sin almacenamiento */ } };
+
+    function ajustarAltura() {
+      el.input.style.height = 'auto';
+      el.input.style.height = Math.min(el.input.scrollHeight, 144) + 'px';
+    }
+
+    function pintarNota(texto) {
+      const li = document.createElement('li');
+      li.className = 'msg msg--nota';
+      li.textContent = texto;
+      el.log.append(li);
+    }
+
+    function pintarMensaje(m) {
+      if (m.id != null) {
+        if (vistos.has(m.id)) return;   // evita duplicados entre la respuesta del insert y el tiempo real
+        vistos.add(m.id);
+      }
+      const li = document.createElement('li');
+      li.className = `msg msg--${m.autor}`;
+      const texto = document.createElement('p');
+      texto.className = 'msg__texto';
+      texto.textContent = m.contenido;      // textContent: nunca se interpreta HTML
+      const h = document.createElement('time');
+      h.className = 'msg__hora';
+      h.dateTime = m.creado_en;
+      h.textContent = hora(m.creado_en);
+      li.append(texto, h);
+      el.log.append(li);
+      bajar();
+    }
+
+    function prepararLog() {
+      el.log.replaceChildren();
+      vistos.clear();
+      pintarNota('Cuéntanos qué le pasa al coche: marca, modelo y qué notas.');
+    }
+
+    function mostrarConversacion() {
+      el.quien.textContent = `Escribes como ${conv.nombre}`;
+      const entrar = () => {
+        el.inicio.hidden = true;
+        el.inicio.getAnimations().forEach(a => a.cancel());
+        el.conv.hidden = false;
+        bajar();
+        if (!sinMovimiento.matches) el.conv.animate(
+          [{ opacity: 0, transform: 'translateY(16px) scale(.985)' }, { opacity: 1, transform: 'none' }],
+          { duration: 450, easing: 'cubic-bezier(.32, .72, 0, 1)' });
+      };
+      if (el.inicio.hidden || sinMovimiento.matches) return entrar();
+      if (el.inicio.dataset.saliendo) return;
+      el.inicio.dataset.saliendo = '1';
+      const boton = el.formInicio.querySelector('.btn');
+      boton.classList.add('is-loading'); // pequeña espera con ruedecita
+      setTimeout(() => {
+        boton.classList.remove('is-loading');
+        delete el.inicio.dataset.saliendo;
+        el.inicio.animate(
+          [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-10px) scale(.98)' }],
+          { duration: 260, easing: 'ease-in', fill: 'forwards' }).finished.then(entrar, entrar);
+      }, 700);
+    }
+
+    function cargarSupabase() {
+      if (window.supabase) return Promise.resolve();
+      return new Promise((ok, fallo) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        s.onload = ok;
+        s.onerror = fallo;
+        document.head.append(s);
+      });
+    }
+
+    function suscribir() {
+      if (canal) db.removeChannel(canal);
+      canal = db.channel(`chat-${conv.id}`)
+        .on('postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'mensajes', filter: `conversacion_id=eq.${conv.id}` },
+          payload => pintarMensaje(payload.new))
+        .subscribe();
+    }
+
+    async function abrirConversacionExistente(uid) {
+      const { data, error } = await db.from('conversaciones').select('id,nombre').eq('cliente_id', uid).maybeSingle();
+      if (error) throw error;
+      if (!data) return false;
+      conv = data;
+      const r = await db.from('mensajes')
+        .select('id,autor,contenido,creado_en')
+        .eq('conversacion_id', conv.id)
+        .order('creado_en', { ascending: true })
+        .limit(500);
+      if (r.error) throw r.error;
+      prepararLog();
+      r.data.forEach(pintarMensaje);
+      suscribir();
+      mostrarConversacion();
+      return true;
+    }
+
+    async function iniciarChat() {
+      if (!conSupabase) {
+        el.demo.hidden = false;
+        const d = leerDemo();
+        if (d && d.nombre) {
+          conv = { id: 'demo', nombre: d.nombre };
+          prepararLog();
+          (d.mensajes || []).forEach(pintarMensaje);
+          mostrarConversacion();
+        }
+        return;
+      }
+      try {
+        await cargarSupabase();
+        db = window.supabase.createClient(cfg.url, cfg.anonKey);
+        const { data: { session } } = await db.auth.getSession();
+        if (session) await abrirConversacionExistente(session.user.id);
+      } catch (e) {
+        errorInicio = e;
+        arranque = null;   // permite reintentar al pulsar de nuevo, sin recargar la página
+        reportarFallo('No se pudo conectar con el chat. Recarga la página o llámanos.', e);
+      }
+    }
+    const asegurarChat = () => (arranque ??= iniciarChat());
+
+    async function empezarConversacion(nombre) {
+      if (!conSupabase) {
+        conv = { id: 'demo', nombre };
+        guardarDemo({ nombre, mensajes: [] });
+        prepararLog();
+        mostrarConversacion();
+        return;
+      }
+      if (!db) throw new Error('chat no disponible');
+      let { data: { session } } = await db.auth.getSession();
+      if (!session) {
+        const r = await db.auth.signInAnonymously();
+        if (r.error) throw r.error;
+        session = r.data.session;
+      }
+      const r = await db.from('conversaciones')
+        .insert({ cliente_id: session.user.id, nombre })
+        .select('id,nombre')
+        .single();
+      if (r.error) {
+        // 23505: ya existía una conversación de este cliente; se retoma
+        if (r.error.code === '23505' && await abrirConversacionExistente(session.user.id)) return;
+        throw r.error;
+      }
+      conv = r.data;
+      prepararLog();
+      suscribir();
+      mostrarConversacion();
+    }
+
+    async function enviarMensaje(texto) {
+      if (!conSupabase) {
+        const d = leerDemo() || { nombre: conv.nombre, mensajes: [] };
+        const m = { id: 'd' + (d.mensajes.length + 1), autor: 'cliente', contenido: texto, creado_en: new Date().toISOString() };
+        d.mensajes.push(m);
+        guardarDemo(d);
+        pintarMensaje(m);
+        return;
+      }
+      const { data, error } = await db.from('mensajes')
+        .insert({ conversacion_id: conv.id, autor: 'cliente', contenido: texto })
+        .select('id,autor,contenido,creado_en')
+        .single();
+      if (error) throw error;
+      pintarMensaje(data);
+    }
+
+    el.formInicio.addEventListener('submit', async e => {
+      e.preventDefault();
+      const nombre = el.nombre.value.trim();
+      const consulta = el.mensaje.value.trim();
+      if (!nombre || !consulta) return;
+      // Teléfono y email viajan en el primer mensaje, así no hace falta tocar la base de datos
+      const telefono = el.telefono.value.trim();
+      const correo = el.email.value.trim();
+      const datos = [telefono && `Teléfono: ${telefono}`, correo && `Email: ${correo}`].filter(Boolean);
+      const primero = datos.length ? `${datos.join('\n')}\n\n${consulta}` : consulta;
+      avisar('');
+      bloquear(el.formInicio, true);
+      try {
+        await asegurarChat();
+        if (conSupabase && !db) throw errorInicio || new Error('No se pudo cargar la librería de Supabase (failed to fetch)');
+        await empezarConversacion(nombre);
+        try {
+          await enviarMensaje(primero);
+        } catch (err2) {
+          el.input.value = primero;   // la conversación ya existe: lo dejamos listo para reenviar
+          ajustarAltura();
+          reportarFallo('No se pudo enviar tu mensaje. Pulsa Enviar para intentarlo de nuevo.', err2);
+        }
+        if (!tactil.matches) el.input.focus({ preventScroll: true });
+      } catch (err) {
+        reportarFallo('No se pudo iniciar el chat. Inténtalo de nuevo en un momento.', err);
+      } finally {
+        bloquear(el.formInicio, false);
+      }
+    });
+
+    el.form.addEventListener('submit', async e => {
+      e.preventDefault();
+      const texto = el.input.value.trim();
+      if (!texto) return;
+      avisar('');
+      el.enviar.disabled = true;
+      try {
+        await enviarMensaje(texto);
+        el.input.value = '';
+        ajustarAltura();
+      } catch (err) {
+        reportarFallo('No se pudo enviar el mensaje. Revisa tu conexión e inténtalo de nuevo.', err);
+      } finally {
+        el.enviar.disabled = false;
+        el.input.focus({ preventScroll: true });
+      }
+    });
+
+    el.input.addEventListener('input', ajustarAltura);
+    el.input.addEventListener('keydown', e => {
+      // En ordenador, Enter envía y Mayús+Enter hace salto de línea. En móvil, Enter es salto de línea.
+      if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && !tactil.matches) {
+        e.preventDefault();
+        el.form.requestSubmit();
+      }
+    });
+
+    // El chat se prepara al acercarse a la sección (o al pulsar "Escribir al taller")
+    new IntersectionObserver((entradas, obs) => {
+      if (entradas.some(x => x.isIntersecting)) { asegurarChat(); obs.disconnect(); }
+    }, { rootMargin: '600px 0px' }).observe($('#chat'));
+
+    // Botones "Escribir al taller": llevan al chat y, en ordenador, dejan el cursor listo
+    $$('[data-abrir-chat]').forEach(boton => boton.addEventListener('click', () => {
+      asegurarChat();
+      if (tactil.matches) return;
+      setTimeout(() => (el.conv.hidden ? el.nombre : el.input).focus({ preventScroll: true }), 700);
+    }));
+
+    /* =====================================================================
+       ANIMACIONES: entrada suave y escalonada al hacer scroll
+       ===================================================================== */
+    if (!sinMovimiento.matches) {
+      const objetivos = $$('.eyebrow, .section__title, .lead, .note, .split > div > .status, .address, .hours__row, .map, .info, .chat, .split .actions, .carousel');
+      objetivos.forEach(x => x.classList.add('reveal'));
+      objetivos.forEach(x => {
+        const i = [...x.parentElement.children].filter(c => c.classList.contains('reveal')).indexOf(x);
+        x.style.setProperty('--d', Math.min(i, 6) * 70 + 'ms');
+      });
+      const io = new IntersectionObserver(entradas => entradas.forEach(en => {
+        if (!en.isIntersecting) return;
+        const x = en.target;
+        io.unobserve(x);
+        x.classList.add('is-in');
+        const fin = e => {
+          if (e.target !== x) return;
+          x.classList.remove('reveal', 'is-in');
+          x.style.removeProperty('--d');
+          x.removeEventListener('transitionend', fin);
+        };
+        x.addEventListener('transitionend', fin);
+      }), { threshold: .15, rootMargin: '0px 0px -6% 0px' });
+      objetivos.forEach(x => io.observe(x));
+    }
+  })();
+  </script>
+</body>
+</html>

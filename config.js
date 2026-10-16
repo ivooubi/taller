@@ -7,6 +7,6 @@
 // Mientras url y anonKey estén vacíos, el chat funciona en modo demostración
 // (los mensajes se guardan solo en el navegador de quien los escribe).
 window.SUPABASE_CONFIG = {
-  url: 'https://nxykmhdtwismygyaljyz.supabase.co/rest/v1/',      // ejemplo: https://abcdefgh.supabase.co
-  anonKey: 'sb_publishable_9xNx5TU7-eMw7ZVB2XV-YA_H8sVggBR'   // clave anon / publishable
+  url: "https://nxykmhdtwismygyaljyz.supabase.co",
+  anonKey: "tu-clave-anon-o-publishable"
 };

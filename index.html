@@ -887,6 +887,23 @@
       el.log.append(li);
     }
 
+    // Teléfono y email viajan al principio del primer mensaje, pero el cliente nunca los ve como texto:
+    // el panel del taller los saca de ahí y los muestra en la cabecera.
+    function separarContacto(texto) {
+      texto = String(texto || '');
+      let m = /^\[contacto\](\{[^\n]*\})\n\n/.exec(texto);
+      if (m) {
+        try { return { contacto: JSON.parse(m[1]), texto: texto.slice(m[0].length) }; } catch { /* mensaje normal */ }
+      }
+      m = /^((?:Teléfono: [^\n]*\n)?(?:Email: [^\n]*\n)?)\n/.exec(texto);
+      if (m && m[1]) {
+        const tel = /Teléfono: ([^\n]*)/.exec(m[1]);
+        const mail = /Email: ([^\n]*)/.exec(m[1]);
+        return { contacto: { telefono: tel ? tel[1] : '', email: mail ? mail[1] : '' }, texto: texto.slice(m[0].length) };
+      }
+      return { contacto: null, texto };
+    }
+
     function pintarMensaje(m) {
       if (m.id != null) {
         if (vistos.has(m.id)) return;   // evita duplicados entre la respuesta del insert y el tiempo real
@@ -896,7 +913,7 @@
       li.className = `msg msg--${m.autor}`;
       const texto = document.createElement('p');
       texto.className = 'msg__texto';
-      texto.textContent = m.contenido;      // textContent: nunca se interpreta HTML
+      texto.textContent = m.autor === 'cliente' ? separarContacto(m.contenido).texto : m.contenido;      // textContent: nunca se interpreta HTML
       const h = document.createElement('time');
       h.className = 'msg__hora';
       h.dateTime = m.creado_en;
@@ -1052,11 +1069,13 @@
       const nombre = el.nombre.value.trim();
       const consulta = el.mensaje.value.trim();
       if (!nombre || !consulta) return;
-      // Teléfono y email viajan en el primer mensaje, así no hace falta tocar la base de datos
+      // Teléfono y email viajan en una primera línea marcada del primer mensaje (sin tocar la base de datos).
+      // No se muestran en el chat: el panel del taller los lee de ahí y los pone en la cabecera.
       const telefono = el.telefono.value.trim();
       const correo = el.email.value.trim();
-      const datos = [telefono && `Teléfono: ${telefono}`, correo && `Email: ${correo}`].filter(Boolean);
-      const primero = datos.length ? `${datos.join('\n')}\n\n${consulta}` : consulta;
+      const primero = (telefono || correo)
+        ? `[contacto]${JSON.stringify({ telefono, email: correo })}\n\n${consulta}`
+        : consulta;
       avisar('');
       bloquear(el.formInicio, true);
       try {

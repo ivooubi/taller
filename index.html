@@ -16,7 +16,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=League+Spartan:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     /* ---------- Variables (estilo Apple: fondos claros, azul de sistema, esquinas redondeadas) ---------- */
@@ -40,7 +40,7 @@
       --ease:    cubic-bezier(.32, .72, 0, 1);
       --font:    "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
       --font-main: var(--font); /* para volver a Montserrat dentro del hero */
-      --font-hero: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif; /* solo el hero */
+      --font-hero: "League Spartan", "Montserrat", "Inter", system-ui, sans-serif; /* solo el hero */
 
       /* Foto panorámica: deciden qué parte se ve. En móvil se centra en el coche. */
       --hero-pos: 10% center;
@@ -119,7 +119,7 @@
 
     /* ---------- Hero: la foto a pantalla completa, con degradado a blanco por abajo ---------- */
     .hero {
-      --font: var(--font-hero); /* el hero conserva la tipografía Apple */
+      --font: var(--font-hero); /* el hero tiene su propia tipografía */
       font-family: var(--font);
       letter-spacing: -.011em;
       position: relative;
@@ -150,10 +150,11 @@
 
     .outline { margin: 0; }
     .headline {
-      font-size: clamp(2.75rem, 7.5vw, 5.5rem);
-      font-weight: 700;
-      line-height: 1.03;
-      letter-spacing: -.04em;
+      font-size: clamp(3rem, 8.5vw, 6.5rem);
+      font-weight: 800;
+      line-height: .98;
+      letter-spacing: -.015em;
+      text-transform: uppercase;
     }
     /* Letras macizas como antes; un halo claro muy suave las separa de la foto */
     .hero .headline, .hero .tagline { filter: drop-shadow(0 0 14px rgb(255 255 255 / .75)); }
@@ -169,7 +170,7 @@
     .tagline {
       max-width: 22em;
       margin-top: clamp(1rem, 2vw, 1.5rem);
-      color: var(--muted);
+      color: #3a3a3c; /* negro suave */
       font-size: clamp(1.1875rem, 1.2vw + .8rem, 1.75rem);
       font-weight: 500;
       line-height: 1.25;
@@ -524,8 +525,8 @@
     <section class="hero" id="inicio">
       <div class="hero__copy">
         <h1 class="outline headline">
-          <span class="line"><span>¿Todo va</span></span>
-          <span class="line"><span>sobre ruedas?</span></span>
+          <span class="line"><span>Ponte en</span></span>
+          <span class="line"><span>marcha</span></span>
         </h1>
         <p class="outline tagline">Si no es así, nosotros nos encargamos</p>
         <div class="actions">
@@ -825,7 +826,7 @@
       $('#resenas-nota').hidden = reales.length > 0;
       const pista = $('#carrusel-pista');
       pista.replaceChildren(...lista.map(r => tarjetaResena(r, false)), ...lista.map(r => tarjetaResena(r, true)));
-      pista.style.setProperty('--dur', `${lista.length * 8}s`);
+      pista.style.setProperty('--dur', `${lista.length * 11}s`); // más segundos por reseña = más despacio
     }
 
     const carrusel = $('#carrusel');

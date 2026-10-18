@@ -7,6 +7,11 @@
   <title>Taller Ruedas</title>
   <meta name="description" content="Taller de coches. Cuéntanos qué le pasa al tuyo y nos encargamos.">
   <meta name="theme-color" content="#ffffff">
+  <link rel="manifest" href="manifest-cliente.webmanifest">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Taller">
   <link rel="preload" as="image" href="img/hero.jpeg" fetchpriority="high">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,7 +117,7 @@
       margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
     }
 
-    /* ---------- Hero: la foto como tarjeta grande ---------- */
+    /* ---------- Hero: la foto a pantalla completa, con degradado a blanco por abajo ---------- */
     .hero {
       --font: var(--font-hero); /* el hero conserva la tipografía Apple */
       font-family: var(--font);
@@ -121,25 +126,24 @@
       isolation: isolate;
       display: flex;
       align-items: center;
-      min-height: clamp(30rem, 78vh, 50rem);
-      min-height: clamp(30rem, 78svh, 50rem);
-      margin: calc(.75rem + env(safe-area-inset-top)) var(--pad) 0;
-      padding: clamp(1.75rem, 6vw, 5rem);
+      min-height: 100vh;
+      min-height: 100svh;
+      margin: 0;
+      padding: clamp(2rem, 6vw, 5rem) clamp(1.75rem, 6vw, 5rem);
       overflow: hidden;
-      border-radius: var(--r-lg);
-      /* Foto: img/hero.jpg. Mientras no exista, se ven las capas de degradado de debajo */
+      /* Foto: img/hero.jpeg. Mientras no exista, se ve el degradado gris de debajo */
       background:
         url("img/hero.jpeg") var(--hero-pos) / cover no-repeat,
-        radial-gradient(70% 90% at 82% 45%, #e2e4ea 0%, rgb(226 228 234 / 0) 70%),
         linear-gradient(135deg, #f5f5f7, #e6e6eb);
     }
-    /* Velo claro a la izquierda: la pared de la nave es casi blanca y el texto oscuro se lee sin esfuerzo */
+    /* Degradado inferior: de la foto al blanco de la página, sin corte */
     .hero::before {
       content: "";
       position: absolute;
-      inset: 0;
+      inset: auto 0 0;
+      height: 38%;
       z-index: -1;
-      background: linear-gradient(90deg, rgb(255 255 255 / .94) 0%, rgb(255 255 255 / .8) 40%, rgb(255 255 255 / .2) 70%, transparent 100%);
+      background: linear-gradient(180deg, rgb(255 255 255 / 0) 0%, rgb(255 255 255 / .75) 60%, var(--bg) 100%);
     }
     .hero__copy { max-width: 46rem; }
     .hero .actions { --font: var(--font-main); font-family: var(--font); letter-spacing: -.005em; }
@@ -151,6 +155,8 @@
       line-height: 1.03;
       letter-spacing: -.04em;
     }
+    /* Letras macizas como antes; un halo claro muy suave las separa de la foto */
+    .hero .headline, .hero .tagline { filter: drop-shadow(0 0 14px rgb(255 255 255 / .75)); }
     /* Cada línea es una máscara para la entrada */
     .line {
       display: block;
@@ -325,6 +331,18 @@
     }
     .chat__bar-title { font-weight: 600; }
     .chat__bar-sub { color: var(--muted); font-size: .875rem; }
+    .chat__campana {
+      display: inline-flex; align-items: center; gap: .4rem; align-self: center;
+      min-height: 2rem; padding: .3rem .85rem; border: 0; border-radius: 999px;
+      background: var(--accent-soft, rgb(0 113 227 / .1)); color: var(--accent, #0071e3);
+      font: 500 .8125rem/1 var(--font, inherit); cursor: pointer; touch-action: manipulation;
+      transition: background-color .2s, color .2s, transform .12s;
+    }
+    .chat__campana:active { transform: scale(.96); }
+    .chat__campana svg { width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .chat__campana[data-estado="activo"] { background: transparent; color: var(--muted); }
+    .chat__campana[data-estado="activo"] svg { fill: currentColor; }
+    .chat__campana[data-estado="bloqueado"] { background: transparent; color: var(--muted); }
 
     .chat__log {
       display: flex;
@@ -423,10 +441,6 @@
       .review { transition: transform .5s var(--ease), box-shadow .5s; }
       .link::after { display: inline-block; transition: transform .3s var(--ease); }
 
-      /* La tarjeta del hero se recoge al bajar (Chrome y Safari recientes) */
-      @supports (animation-timeline: scroll()) {
-        .hero { transform-origin: 50% 0; animation: hero-out linear both; animation-timeline: scroll(root); animation-range: 0 70vh; }
-      }
       @media (hover: hover) {
         .btn--signal:hover:not(:disabled) { translate: 0 -1px; box-shadow: 0 8px 22px rgb(0 113 227 / .32); }
         .link:hover::after { transform: translateX(4px); }
@@ -448,8 +462,6 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: no-preference) {
-      /* Resplandor azul que respira detrás del hero */
-      .hero::after { content: ""; position: absolute; inset: -25%; z-index: -1; pointer-events: none; background: radial-gradient(38% 42% at 74% 42%, rgb(0 113 227 / .16), transparent 70%); animation: glow 14s ease-in-out infinite alternate; }
       /* El chat se ilumina al escribir en él */
       .chat:not(.reveal) { transition: box-shadow .4s; }
       .chat:focus-within { box-shadow: 0 0 0 1px rgb(0 113 227 / .35), 0 18px 50px rgb(0 113 227 / .14); }
@@ -498,13 +510,10 @@
     @media (max-width: 800px) {
       .hero {
         align-items: flex-end;
-        margin-inline: .75rem;
-        border-radius: 1.5rem;
-        background-position: var(--hero-pos-m), center, center;
+        padding-bottom: clamp(2.5rem, 9vw, 4rem);
+        background-position: var(--hero-pos-m), center;
       }
-      .hero::before {
-        background: linear-gradient(180deg, rgb(255 255 255 / .35) 0%, rgb(255 255 255 / 0) 28%, rgb(255 255 255 / .88) 64%, #fff 100%);
-      }
+      .hero::before { height: 55%; background: linear-gradient(180deg, rgb(255 255 255 / 0) 0%, rgb(255 255 255 / .8) 55%, var(--bg) 100%); }
     }
   </style>
 </head>
@@ -615,6 +624,10 @@
             <div class="chat__bar">
               <span class="chat__bar-title">Taller Ruedas</span>
               <span class="chat__bar-sub" id="chat-quien"></span>
+              <button class="chat__campana" id="chat-campana" type="button" aria-pressed="false">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg>
+                <span data-txt>Activar avisos</span>
+              </button>
             </div>
             <ol class="chat__log" id="chat-log" aria-label="Mensajes" aria-live="polite"></ol>
             <form class="chat__composer" id="chat-form">
@@ -632,10 +645,11 @@
 
   <footer class="footer">
     <p>© 2026 Taller Ruedas</p>
-    <a href="https://ivooubi.github.io/taller2">Acceso del taller</a>
+    <a href="taller.html">Acceso del taller</a>
   </footer>
 
   <script src="config.js"></script>
+  <script src="push.js"></script>
   <script>
   (() => {
     'use strict';
@@ -826,7 +840,7 @@
     const el = {
       demo: $('#chat-demo'), inicio: $('#chat-inicio'), conv: $('#chat-conv'),
       formInicio: $('#chat-form-inicio'), nombre: $('#chat-nombre'), telefono: $('#chat-telefono'),
-      email: $('#chat-email'), mensaje: $('#chat-mensaje'), quien: $('#chat-quien'),
+      email: $('#chat-email'), mensaje: $('#chat-mensaje'), quien: $('#chat-quien'), campana: $('#chat-campana'),
       log: $('#chat-log'), form: $('#chat-form'), input: $('#chat-input'),
       enviar: $('#chat-enviar'), aviso: $('#chat-aviso')
     };
@@ -921,6 +935,15 @@
       li.append(texto, h);
       el.log.append(li);
       bajar();
+      if (m.autor !== 'cliente' && window.TallerPush && Date.now() - new Date(m.creado_en) < 60000) {
+        TallerPush.local('Taller Ruedas', m.contenido.slice(0, 140), 'taller', location.pathname);
+      }
+    }
+
+    // Botón de avisos: solo con chat real (no en modo demo) y una vez que existe la conversación
+    function iniciarAvisos() {
+      if (!conSupabase || !window.TallerPush || !conv || conv.id === 'demo') return;
+      TallerPush.enlazar(el.campana, () => db, () => ({ rol: 'cliente', conversacionId: conv.id }));
     }
 
     function prepararLog() {
@@ -931,6 +954,7 @@
 
     function mostrarConversacion() {
       el.quien.textContent = `Escribes como ${conv.nombre}`;
+      iniciarAvisos();
       const entrar = () => {
         el.inicio.hidden = true;
         el.inicio.getAnimations().forEach(a => a.cancel());
